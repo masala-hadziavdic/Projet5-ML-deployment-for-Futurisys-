@@ -250,7 +250,7 @@ ply @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/ply_16994739
 prometheus-client @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/prometheus_client_1699495496669/work
 prompt-toolkit @ file:///C:/b/abs_68uwr58ed1/croot/prompt-toolkit_1704404394082/work
 Protego @ file:///tmp/build/80754af9/protego_1598657180827/work
-protobuf==6.33.0
+protobuf==6.33.5
 psutil @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/psutil_1699482842340/work
 ptyprocess @ file:///tmp/build/80754af9/ptyprocess_1609355006118/work/dist/ptyprocess-0.7.0-py2.py3-none-any.whl
 pure-eval @ file:///opt/conda/conda-bld/pure_eval_1646925070566/work
@@ -402,7 +402,7 @@ webencodings @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/web
 websocket-client @ file:///C:/b/abs_5dmnxxoci9/croot/websocket-client_1715878351319/work
 Werkzeug @ file:///C:/b/abs_8bittcw9jr/croot/werkzeug_1716533366070/work
 whatthepatch @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/whatthepatch_1699497134590/work
-wheel==0.45.1
+wheel==0.46.2
 widgetsnbextension @ file:///C:/b/abs_538o2crz7f/croot/widgetsnbextension_1710960099872/work
 win-inet-pton @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/win_inet_pton_1699472992992/work
 wrapt @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/wrapt_1699480231633/work
