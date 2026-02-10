@@ -3,7 +3,7 @@ from app.main import app
 
 client = TestClient(app)
 
-# Exemple minimal de payload valide pour EmployeeData
+# Payload exemple valide correspondant exactement aux champs de EmployeeData
 sample_employee_data = {
     "age": 35,
     "genre": "Homme",
@@ -29,14 +29,25 @@ sample_employee_data = {
 }
 
 def test_home():
+    """Test de l’endpoint racine '/'"""
     response = client.get("/")
     assert response.status_code == 200
     assert response.json() == {"message": "API is running"}
 
+
 def test_predict_endpoint():
+    """Test de l’endpoint POST '/predict'"""
     response = client.post("/predict", json=sample_employee_data)
     assert response.status_code == 200
+
     data = response.json()
     assert "prediction" in data
+    assert "probability_quit" in data
+    assert "probability_stay" in data
+
+    # Vérifie que la prédiction renvoie "Oui" ou "Non"
     assert data["prediction"] in ["Oui", "Non"]
 
+    # Vérifie que les probabilités sont entre 0 et 1
+    assert 0.0 <= data["probability_quit"] <= 1.0
+    assert 0.0 <= data["probability_stay"] <= 1.0
