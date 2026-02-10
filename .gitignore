@@ -1,0 +1,6 @@
+# Ignorer les dossiers __pycache__ et les fichiers compilés Python
+__pycache__/
+*.pyc
+
+# Ignorer les checkpoints Jupyter
+.ipynb_checkpoints/
