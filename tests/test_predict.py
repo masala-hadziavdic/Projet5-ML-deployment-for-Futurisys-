@@ -42,5 +42,5 @@ def test_predict_endpoint():
     assert response.status_code == 200
     data = response.json()
     assert "prediction" in data
-    # Vérifie que la prédiction renvoie soit "Oui" soit "Non"
-    assert data["prediction"][0] in ["Oui", "Non"]
+    assert data["prediction"] in ["Oui", "Non"]
+
