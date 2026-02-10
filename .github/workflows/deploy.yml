@@ -2,12 +2,11 @@ name: Test and Deploy API
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
-  # -------- TESTS --------
   test:
     runs-on: ubuntu-latest
 
@@ -24,25 +23,20 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest joblib scikit-learn pandas
-
-      - name: Train ML model
-        run: |
-          python app/train_model.py  # Script à créer qui génère app/model/model.pkl
+          pip install pytest
 
       - name: Test FastAPI app loads
         run: |
           python -c "
-import sys
-sys.path.insert(0, '.')
-from app.main import app
-print('✅ FastAPI app loads correctly')
+          import sys
+          sys.path.insert(0, '.')
+          from app.main import app
+          print('FastAPI app loads correctly')
           "
 
       - name: Run tests
         run: pytest
 
-  # -------- DEPLOY TO HUGGINGFACE --------
   deploy:
     needs: test
     runs-on: ubuntu-latest
@@ -57,7 +51,7 @@ print('✅ FastAPI app loads correctly')
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          echo "🚀 Deploying to HuggingFace..."
+          echo "Deploying to HuggingFace..."
 
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
@@ -67,10 +61,10 @@ print('✅ FastAPI app loads correctly')
 
           rm -rf app/ || true
 
-          cp ../Dockerfile . || true
-          cp ../requirements.txt . || true
-          cp ../README.md . || true
-          cp -r ../app . || true
+          cp ../Dockerfile .
+          cp ../requirements.txt .
+          cp ../README.md .
+          cp -r ../app .
 
           git add .
           git commit -m "Auto deploy: ${{ github.sha }}" || exit 0
