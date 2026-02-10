@@ -1,55 +1,41 @@
 from fastapi import FastAPI
 import joblib
 import pandas as pd
-from pydantic import BaseModel
-from typing import List
+from app.employee_models import EmployeeData
 
 app = FastAPI(title="ML Model API")
 
+# Charger le modèle
 model = joblib.load("app/model/model.pkl")
-
-class PredictionInput(BaseModel):
-    features: List[float]
 
 @app.get("/")
 def home():
     return {"message": "API is running"}
 
 @app.post("/predict")
-def predict(data: PredictionInput):
+def predict(data: EmployeeData):
     try:
-        columns = [
-            "age",
-            "genre",
-            "revenu_mensuel",
-            "statut_marital",
-            "departement",
-            "nombre_experiences_precedentes",
-            "annees_dans_l_entreprise",
-            "nombre_participation_pee",
-            "nb_formations_suivies",
-            "distance_domicile_travail",
-            "niveau_education",
-            "domaine_etude",
-            "frequence_deplacement",
-            "annees_depuis_la_derniere_promotion",
-            "satisfaction_employee_environnement",
-            "note_evaluation_precedente",
-            "satisfaction_employee_nature_travail",
-            "satisfaction_employee_equipe",
-            "satisfaction_employee_equilibre_pro_perso",
-            "note_evaluation_actuelle",
-            "augementation_salaire_precedente"
-        ]
+        # Convertir input en dictionnaire
+        input_dict = data.model_dump()
+        df = pd.DataFrame([input_dict])
 
-        features = pd.DataFrame([data.features], columns=columns)
+        # Prédiction
+        prediction = model.predict(df)[0]  # récupère 0 ou 1
+        proba = model.predict_proba(df)[0]  # [prob_stay, prob_quit] si classifier binaire
 
-        prediction = model.predict(features)
+        # Transformer en sortie lisible
+        result = {
+            "prediction": "Oui" if prediction == 1 else "Non",  # 1 = quitte, 0 = reste
+            "probability_quit": float(proba[1]),  # probabilité de quitter
+            "probability_stay": float(proba[0])   # probabilité de rester
+        }
 
-        return {"prediction": prediction.tolist()}
+        return result
 
     except Exception as e:
         return {"error": str(e)}
+
+
 
 
 
