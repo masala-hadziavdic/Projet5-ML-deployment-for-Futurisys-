@@ -1,8 +1,8 @@
 fastapi
-uvicorn
-scikit-learn
 pandas
-numpy
-joblib
-pytest
+scikit-learn
 xgboost
+joblib
+httpx
+pytest
+
