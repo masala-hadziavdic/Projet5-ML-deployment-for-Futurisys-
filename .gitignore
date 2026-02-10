@@ -4,3 +4,6 @@ __pycache__/
 
 # Checkpoints Jupyter
 .ipynb_checkpoints/
+
+# Ignore CSV data files
+*.csv
