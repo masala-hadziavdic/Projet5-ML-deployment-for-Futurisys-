@@ -6,18 +6,18 @@ import os
 
 app = FastAPI(title="ML Model API")
 
-# --- Charger le modèle seulement si le fichier existe ---
-model_path = "app/model/model.pkl"
-if os.getenv("CI") == "true" or not os.path.exists(model_path):
-    model = None
-    print("⚠️ Modèle non chargé (CI ou fichier manquant)")
+# --- Charger le pipeline complet (préprocessing + XGBoost)
+pipeline_path = "app/model/pipeline.pkl"
+if not os.path.exists(pipeline_path):
+    pipeline = None
+    print("⚠️ Pipeline non trouvé, API fonctionnera avec un mock")
 else:
     try:
-        model = joblib.load(model_path)
-        print(f"✅ Modèle chargé depuis {model_path}")
+        pipeline = joblib.load(pipeline_path)
+        print(f"✅ Pipeline chargé depuis {pipeline_path}")
     except Exception as e:
-        model = None
-        print(f"❌ Erreur lors du chargement du modèle: {e}")
+        pipeline = None
+        print(f"❌ Erreur lors du chargement du pipeline: {e}")
 
 
 @app.get("/")
@@ -27,39 +27,26 @@ def home():
 
 @app.post("/predict")
 def predict(data: EmployeeData):
-if model is None:
-    return {
-        "prediction": "Non",
-        "probability_quit": 0.3,
-        "probability_stay": 0.7,
-        "confidence_level": "mock"
-    }
 
+    if model is None:
+        return {
+            "prediction": "Non",
+            "probability_quit": 0.3,
+            "probability_stay": 0.7
+        }
 
     try:
-        # Convertir input en dictionnaire
         input_dict = data.model_dump()
         df = pd.DataFrame([input_dict])
 
-        # Prédiction
         prediction = model.predict(df)[0]
         proba = model.predict_proba(df)[0]
 
-        result = {
+        return {
             "prediction": "Oui" if prediction == 1 else "Non",
             "probability_quit": float(proba[1]),
             "probability_stay": float(proba[0])
         }
 
-        return result
-
     except Exception as e:
         return {"error": str(e)}
-
-
-
-
-
-
-
-
