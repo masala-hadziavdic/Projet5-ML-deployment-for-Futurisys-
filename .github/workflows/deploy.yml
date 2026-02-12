@@ -7,46 +7,57 @@ on:
     branches: ["main"]
 
 jobs:
+  # =========================
+  # 1. TEST JOB
+  # =========================
   test:
     runs-on: ubuntu-latest
 
     steps:
+      # Clone repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Python setup
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.12"
 
+      # Install dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest httpx  # ajouter httpx pour FastAPI TestClient
+          pip install pytest httpx
 
+      # Check FastAPI import
       - name: Test FastAPI app loads
         run: |
           python -c "
-          import sys
-          import os
+          import sys, os
           sys.path.insert(0, os.path.abspath('.'))
           from app.main import app
           print('FastAPI app loads correctly')
           "
 
+      # Run tests
       - name: Run tests
         run: |
-          export PYTHONPATH=$(pwd)   # <-- Ajout pour que 'app' soit trouvé
+          export PYTHONPATH=$(pwd)
           pytest
 
+  # =========================
+  # 2. DEPLOY JOB
+  # =========================
   deploy:
     needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           lfs: true
 
@@ -59,17 +70,22 @@ jobs:
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
 
+          # Clone HF space
           git clone https://huggingface.co/spaces/amely188/ml-futurisys hf-space
           cd hf-space
 
+          # Clean previous app
           rm -rf app/ || true
 
-          cp ../Dockerfile . 
+          # Copy project files
+          cp ../Dockerfile .
           cp ../requirements.txt .
           cp ../README.md .
           cp -r ../app .
 
+          echo "Files copied:"
+          ls -R
+
           git add .
           git commit -m "Auto deploy: ${{ github.sha }}" || exit 0
           git push https://amely188:$HF_TOKEN@huggingface.co/spaces/amely188/ml-futurisys main
-
