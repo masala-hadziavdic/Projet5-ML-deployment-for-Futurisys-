@@ -6,10 +6,11 @@ import os
 
 app = FastAPI(title="ML Model API")
 
-# --- Charger le pipeline complet (préprocessing + XGBoost)
+# --- Charger le pipeline complet (préprocessing + modèle)
 pipeline_path = "app/model/pipeline.pkl"
+pipeline = None
+
 if not os.path.exists(pipeline_path):
-    pipeline = None
     print("⚠️ Pipeline non trouvé, API fonctionnera avec un mock")
 else:
     try:
@@ -27,8 +28,8 @@ def home():
 
 @app.post("/predict")
 def predict(data: EmployeeData):
-
-    if model is None:
+    # Mode fallback si pipeline absent
+    if pipeline is None:
         return {
             "prediction": "Non",
             "probability_quit": 0.3,
@@ -39,8 +40,8 @@ def predict(data: EmployeeData):
         input_dict = data.model_dump()
         df = pd.DataFrame([input_dict])
 
-        prediction = model.predict(df)[0]
-        proba = model.predict_proba(df)[0]
+        prediction = pipeline.predict(df)[0]
+        proba = pipeline.predict_proba(df)[0]
 
         return {
             "prediction": "Oui" if prediction == 1 else "Non",
