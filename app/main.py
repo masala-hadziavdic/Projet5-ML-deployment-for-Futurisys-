@@ -7,11 +7,17 @@ import os
 app = FastAPI(title="ML Model API")
 
 # --- Charger le pipeline complet (préprocessing + modèle)
-pipeline_path = "app/model/pipeline.pkl"
+pipeline_path = os.path.join(
+    os.path.dirname(__file__),
+    "model",
+    "pipeline.pkl"
+)
+
 pipeline = None
 
 if not os.path.exists(pipeline_path):
-    print("⚠️ Pipeline non trouvé, API fonctionnera avec un mock")
+    print(f"⚠️ Pipeline non trouvé à l'emplacement: {pipeline_path}")
+    print("API fonctionnera avec un mock")
 else:
     try:
         pipeline = joblib.load(pipeline_path)
@@ -28,6 +34,7 @@ def home():
 
 @app.post("/predict")
 def predict(data: EmployeeData):
+
     # Mode fallback si pipeline absent
     if pipeline is None:
         return {
