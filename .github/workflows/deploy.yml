@@ -7,6 +7,9 @@ on:
     branches: ["main"]
 
 jobs:
+  # =========================
+  # 1. TEST JOB
+  # =========================
   test:
     runs-on: ubuntu-latest
     steps:
@@ -25,17 +28,16 @@ jobs:
           pip install pytest httpx
 
       - name: Test FastAPI app loads
-        run: |
-          import sys, os
-          sys.path.insert(0, os.path.abspath('.'))
-          from app.main import app
-          print('FastAPI app loads correctly')
+        run: python -c "import sys, os; sys.path.insert(0, os.path.abspath('.')); from app.main import app; print('FastAPI app loads correctly')"
 
       - name: Run tests
         run: |
           export PYTHONPATH=$(pwd)
           pytest
 
+  # =========================
+  # 2. DEPLOY JOB
+  # =========================
   deploy:
     needs: test
     runs-on: ubuntu-latest
