@@ -4,7 +4,7 @@ API de prédiction d'attrition des employés - Futurisys
 """
 
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Optional, Dict
+from typing import Optional, Dict
 from datetime import datetime
 from enum import Enum
 
@@ -16,23 +16,19 @@ class HeuresSupplementaires(str, Enum):
     OUI = "Oui"
     NON = "Non"
 
-
 class Genre(str, Enum):
     HOMME = "Homme"
     FEMME = "Femme"
-
 
 class StatutMarital(str, Enum):
     CELIBATAIRE = "Célibataire"
     MARIE = "Marié(e)"
     DIVORCE = "Divorcé(e)"
 
-
 class Departement(str, Enum):
     COMMERCIAL = "Commercial"
     CONSULTING = "Consulting"
     RH = "Ressources Humaines"
-
 
 class DomaineEtude(str, Enum):
     INFRA_CLOUD = "Infra & Cloud"
@@ -41,7 +37,6 @@ class DomaineEtude(str, Enum):
     MARKETING = "Marketing"
     ENTREPRENEURIAT = "Entrepreneuriat"
     RH = "Ressources Humaines"
-
 
 class FrequenceDeplacement(str, Enum):
     FREQUENT = "Voyage_Fréquent"
