@@ -3,4 +3,5 @@ uvicorn
 pydantic
 pytest
 httpx
+joblib
 psycopg2-binary
