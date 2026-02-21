@@ -1,7 +1,6 @@
 fastapi
 uvicorn
-pandas
-scikit-learn
-joblib
-xgboost
 pydantic
+pytest
+httpx
+psycopg2-binary
