@@ -1,9 +1,21 @@
-# Fichiers compilés Python
+# Environnements Python
+hf-env-py/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 
-# Checkpoints Jupyter
-.ipynb_checkpoints/
+# Jupyter / Notebook
+.ipynb_checkpoints
 
-# Ignore CSV data files
-*.csv
+# Poetry
+poetry.lock
+
+# VSCode
+.vscode/
+
+# Logs
+*.log
+
+# Windows
+Thumbs.db
