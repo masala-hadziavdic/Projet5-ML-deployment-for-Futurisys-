@@ -1,119 +1,202 @@
 # 💻 ML Futurisys – Attrition Prediction API
 
-![Python](https://img.shields.io/badge/Python-3.12.7-blue)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Local-blue)
-![XGBoost](https://img.shields.io/badge/XGBoost-3.0.4-orange)
-![Pytest](https://img.shields.io/badge/Tests-Pytest%207.4.4-green)
-[![Test and Deploy API](https://github.com/masala-hadziavdic/Projet5-ML-deployment-for-Futurisys-/actions/workflows/deploy.yml/badge.svg)](https://github.com/masala-hadziavdic/Projet5-ML-deployment-for-Futurisys-/actions/workflows/deploy.yml)
+🔗 Liens du projet
+
+🌐 Hugging Face Space : https://huggingface.co/spaces/amely188/ml-futurisys
+
+💻 GitHub Repository : https://github.com/masala-hadziavdic/Projet5-ML-deployment-for-Futurisys-
+
+Table des matières
+
+À propos du projet
+
+Architecture
+
+Schéma UML
+
+Stack technique
+
+Installation locale
+
+Initialisation PostgreSQL
+
+Lancement de l’API
+
+Exemple d’utilisation
+
+Tests & qualité
+
+Traçabilité des prédictions
+
+CI/CD & Déploiement
+
+Auteur
 
 ---
 
-## 🔗 Liens du projet
+📖 À propos du projet
 
-- 🌐 **Hugging Face Space** : https://huggingface.co/spaces/amely188/ml-futurisys  
-- 💻 **GitHub Repository** : https://github.com/masala-hadziavdic/Projet5-ML-deployment-for-Futurisys
+L’API Futurisys ML est une solution de classification permettant de prédire l’attrition des employés (probabilité qu’un employé quitte l’entreprise).
 
----
+Le modèle utilisé est un XGBoost pré-entraîné, exposé via une API FastAPI.
 
-## 📌 Table des matières
+📊 Performances du modèle
+Métrique	Valeur
+Accuracy	0.7483
+F1-Score	0.4308
+Précision	0.3373
+Rappel	0.5957
+TN	192
+FP	55
+FN	19
+TP	28
+🎯 Objectifs du projet
 
-- [À propos du projet](#-à-propos-du-projet)  
-- [Architecture](#-architecture)  
-- [Schéma de base de données (UML)](#-schéma-uml-de-la-base-de-données)  
-- [Stack technique & versions](#-stack-technique--versions)  
-- [Installation locale](#-installation-locale)  
-- [Initialisation base PostgreSQL](#-initialisation-base-postgresql)  
-- [Lancement de l’API](#-lancement-de-lapi)  
-- [Exemples d’utilisation](#-exemples-dutilisation)  
-- [Tests & qualité](#-tests--qualité)  
-- [Traçabilité des prédictions](#-traçabilité-des-prédictions)  
-- [Déploiement et CI/CD](#-déploiement-et-cicd)  
-- [Auteur](#-auteur)
+Exposer un modèle ML via une API REST
 
----
+Enregistrer toutes les prédictions en base PostgreSQL
 
-# 📖 À propos du projet
+Assurer la traçabilité complète
 
-L’API Futurisys ML est une solution de classification automatisée conçue pour analyser et anticiper l’attrition au sein d’une entreprise. Elle s’appuie sur un modèle XGBoost pré-entraîné afin d’estimer la probabilité qu’un employé décide de quitter l’organisation.
+Mettre en place un pipeline CI/CD
 
-| Métrique       | Valeur | Description |
-|----------------|--------|------------|
-| Accuracy       | 0.7483 | Précision globale sur les données de test |
-| F1-Score       | 0.4308 | Équilibre précision / rappel |
-| Précision      | 0.3373 | Taux de vrais positifs parmi les prédictions positives |
-| Rappel         | 0.5957 | Taux de détection des vrais cas d’attrition |
-| True Negatives (TN) | 192 | Nombre de vrais négatifs |
-| False Positives (FP) | 55 | Nombre de faux positifs |
-| False Negatives (FN) | 19 | Nombre de faux négatifs |
-| True Positives (TP) | 28 | Nombre de vrais positifs |
+Déployer automatiquement sur Hugging Face Spaces
 
+🏗️ Architecture
+Client
+   ↓
+FastAPI (app/main.py)
+   ↓
+prediction_service.py
+   ↓
+database.py
+   ↓
+PostgreSQL
+📂 Rôle des fichiers principaux
+Fichier	Description
+app/main.py	Point d’entrée FastAPI
+prediction_service.py	Logique métier
+database.py	Connexion et gestion PostgreSQL
+model.pkl	Modèle XGBoost
+test_prediction_service.py	Tests unitaires
+🗄️ Schéma UML de la Base de Données
 
-Toutes les interactions avec le modèle passent obligatoirement par PostgreSQL pour :
+Diagramme UML (à placer dans assets/uml_database.png) :
 
-- ✅ Enregistrement des **inputs**  
-- ✅ Enregistrement des **outputs**  
-- ✅ Historique complet des prédictions  
-- ✅ Audit et traçabilité
+![UML Database](assets/uml_database.png)
+⚙️ Stack technique & versions
+Technologie	Version
+Python	3.12
+FastAPI	0.104+
+XGBoost	3.0.4
+Pandas	2.3+
+NumPy	2.3+
+PostgreSQL	13+
+Psycopg2	2.9+
+SQLAlchemy	2.0+
+Pytest	7.4+
+GitHub Actions	CI/CD
+Hugging Face Spaces	Déploiement
+💾 Installation locale
+# Cloner le repository
+git clone https://github.com/masala-hadziavdic/Projet5-ML-deployment-for-Futurisys-.git
+cd Projet5-ML-deployment-for-Futurisys-
 
----
-
-# 🏗️ Architecture
-
-Client / API  
-↓  
-`prediction_service.py`  
-↓  
-`database.py`  
-↓  
-PostgreSQL  
-
-| Fichier | Rôle |
-|----------|------|
-| `database.py` | Connexion et gestion DB |
-| `prediction_service.py` | Logique métier (insert & retrieve) |
-| `test_prediction_service.py` | Tests unitaires Pytest |
-
----
-
-# 🗄️ Schéma UML de la Base de Données
-
-**Exemple diagramme UML exportable Draw.io / PNG** :
-
-![UML Database](assets/uml_database.png)  
-*(Remplace `assets/uml_database.png` par le chemin réel de ton image exportée depuis Draw.io)*
-
----
-
-# ⚙️ Stack technique & versions
-
-| Technologie | Version |
-|------------|---------|
-| Python | 3.12.7 (Anaconda) |
-| FastAPI | 0.104+ |
-| XGBoost | 3.0.4 |
-| Pandas | 2.3.3 |
-| NumPy | 2.3.4 |
-| PostgreSQL | 13+ |
-| Psycopg2-binary | 2.9.11 |
-| Pytest | 7.4.4 |
-| SQLAlchemy | 2.0+ |
-
----
-
-# 💾 Installation locale
-
-```bash
-# Cloner le repo
-git clone https://github.com/masala-hadziavdic/Projet5-ML-deployment-for-Futurisys.git
-cd Projet5-ML-deployment-for-Futurisys
-
-# Créer environnement Python
+# Créer environnement virtuel
 python -m venv venv
-# Linux/macOS
-source venv/bin/activate
-# Windows
+
+# Activation Windows
 venv\Scripts\activate
+
+# Activation Linux/macOS
+source venv/bin/activate
 
 # Installer dépendances
 pip install --upgrade pip
 pip install -r requirements.txt
+🐘 Initialisation PostgreSQL
+
+Créer une base :
+
+CREATE DATABASE futurisys;
+
+Configurer les variables d’environnement :
+
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=futurisys
+DB_USER=postgres
+DB_PASSWORD=your_password
+🚀 Lancement de l’API
+uvicorn app.main:app --reload
+
+Documentation Swagger disponible à :
+
+http://127.0.0.1:8000/docs
+📬 Exemple d’utilisation
+POST /predict
+{
+  "prediction": "Non",
+  "probability_quit": 0.0962093397974968,
+  "probability_stay": 0.9037906527519226
+}
+
+
+🧪 Tests & qualité
+
+Lancer les tests :
+
+pytest
+
+Les tests vérifient :
+
+Chargement du modèle
+
+Validation du schéma d’entrée
+
+Insertion en base
+
+Récupération des prédictions
+
+📊 Traçabilité des prédictions
+
+Chaque prédiction est stockée en base PostgreSQL :
+
+Inputs utilisateur
+
+Score de probabilité
+
+Classe prédite
+
+Timestamp
+
+Cela garantit :
+
+Auditabilité
+
+Historique complet
+
+Analyse future des performances
+
+🔁 CI/CD & Déploiement
+
+Pipeline GitHub Actions :
+
+Exécution des tests
+
+Vérification du chargement FastAPI
+
+Déploiement automatique vers Hugging Face Space
+
+Déploiement automatique vers :
+
+👉 https://huggingface.co/spaces/amely188/ml-futurisys
+
+👩‍💻 Auteur
+
+Support et contact
+Auteur : masala-hadziavdic (amela188@hotmail.com)
+Projet : Formation Data Scientist Machine Learning - OpenClassrooms
+Repository : GitHub
+Démo live : Hugging Face Spaces
+Projet réalisé dans le cadre du déploiement d’une solution Machine Learning avec CI/CD et infrastructure PostgreSQL.
