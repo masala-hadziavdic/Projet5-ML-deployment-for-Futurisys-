@@ -1,8 +1,3 @@
-"""
-API de prédiction d'attrition des employés - Futurisys
-Prêt pour Hugging Face Spaces
-"""
-
 from fastapi import FastAPI, HTTPException
 import joblib
 import pandas as pd
@@ -11,7 +6,7 @@ from pydantic import BaseModel
 from typing import Optional
 
 # ================================
-# Définir les modèles Pydantic
+# Pydantic Models
 # ================================
 
 class EmployeeData(BaseModel):
@@ -47,36 +42,26 @@ class PredictionResult(BaseModel):
     probability_stay: float
     confidence_level: str
 
-class ErrorResponse(BaseModel):
-    error: str
-    message: str
-    details: Optional[dict] = None
-
-# ================================
-# Initialiser FastAPI
-# ================================
-
 app = FastAPI(title="ML Employee Attrition API")
 
 # ================================
-# Charger le pipeline complet
+# Load pipeline
 # ================================
 
 pipeline_path = os.path.join(os.path.dirname(__file__), "model", "pipeline.pkl")
 pipeline = None
 
-if not os.path.exists(pipeline_path):
-    print(f"⚠️ Pipeline non trouvé: {pipeline_path}. L'API utilisera un mock.")
-else:
+if os.path.exists(pipeline_path):
     try:
         pipeline = joblib.load(pipeline_path)
-        print(f"✅ Pipeline chargé depuis {pipeline_path}")
+        print("✅ Pipeline chargé")
     except Exception as e:
-        pipeline = None
-        print(f"❌ Erreur lors du chargement du pipeline: {e}")
+        print(f"❌ Erreur chargement pipeline: {e}")
+else:
+    print("⚠️ Pipeline non trouvé — mode mock activé")
 
 # ================================
-# Endpoints
+# Routes
 # ================================
 
 @app.get("/")
@@ -85,9 +70,8 @@ def home():
 
 @app.post("/predict", response_model=PredictionResult)
 def predict(data: EmployeeData):
-    """Prédit le risque d'attrition pour un employé"""
+
     if pipeline is None:
-        # Mock si le pipeline n'est pas disponible
         return PredictionResult(
             prediction="Non",
             probability_quit=0.3,
@@ -96,25 +80,20 @@ def predict(data: EmployeeData):
         )
 
     try:
-        # Compatible Pydantic v1/v2
-        if hasattr(data, "model_dump"):
-            df = pd.DataFrame([data.model_dump()])
-        else:
-            df = pd.DataFrame([data.dict()])
+        input_data = data.model_dump() if hasattr(data, "model_dump") else data.dict()
+        df = pd.DataFrame([input_data])
 
-        # Prédiction
         prediction = pipeline.predict(df)[0]
 
-        # Probabilité
         if hasattr(pipeline, "predict_proba"):
             proba = pipeline.predict_proba(df)[0]
         else:
-            # approximation si pas de predict_proba
             proba = [1 - prediction, prediction]
 
-        # Niveau de confiance
         confidence_level = (
-            "High" if proba[1] > 0.7 else "Medium" if proba[1] > 0.3 else "Low"
+            "High" if proba[1] > 0.7 else
+            "Medium" if proba[1] > 0.3 else
+            "Low"
         )
 
         return PredictionResult(
@@ -127,5 +106,9 @@ def predict(data: EmployeeData):
     except Exception as e:
         raise HTTPException(
             status_code=400,
-            detail={"error": "PredictionError", "message": str(e), "input_data": data.dict()}
+            detail={
+                "error": "PredictionError",
+                "message": str(e),
+                "input_data": input_data
+            }
         )

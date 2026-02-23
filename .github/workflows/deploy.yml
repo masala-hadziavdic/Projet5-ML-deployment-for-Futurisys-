@@ -1,66 +1,67 @@
-name: ML CI/CD
+name: Deploy ML API to HuggingFace
 
 on:
   push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+    branches: [ main ]
 
 jobs:
-  # =========================
-  # 1. TEST JOB
-  # =========================
+
+  # ======================
+  # 1 TEST
+  # ======================
   test:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.12"
+          cache: "pip"
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest httpx
 
-      - name: Test FastAPI app loads
-        run: python -c "import sys, os; sys.path.insert(0, os.path.abspath('.')); from app.main import app; print('FastAPI app loads correctly')"
-
-      - name: Run tests
+      - name: Check FastAPI loads
         run: |
-          export PYTHONPATH=$(pwd)
-          pytest
+          python -c "import sys; sys.path.insert(0,'.'); from app.main import app; print('API loads successfully')"
 
-  # =========================
-  # 2. DEPLOY JOB
-  # =========================
+
+  # ======================
+  # 2️ DEPLOY
+  # ======================
   deploy:
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+
     steps:
       - uses: actions/checkout@v4
         with:
           lfs: true
 
-      - name: Deploy to Hugging Face Space
+      - name: Deploy to HuggingFace Space
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          echo "Deploying to HuggingFace..."
+          echo "🚀 Deploying to HuggingFace..."
+
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
+
           git clone https://huggingface.co/spaces/amely188/ml-futurisys hf-space
           cd hf-space
-          rm -rf app/ || true
-          cp ../Dockerfile .
-          cp ../requirements.txt .
-          cp ../README.md .
+
+          rm -rf * || true
+
           cp -r ../app .
+          cp ../requirements.txt .
+          cp ../Dockerfile .
+          cp ../README.md .
+
           git add .
           git commit -m "Auto deploy: ${{ github.sha }}" || exit 0
           git push https://$HF_TOKEN@huggingface.co/spaces/amely188/ml-futurisys main

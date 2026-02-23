@@ -2,9 +2,7 @@ fastapi
 uvicorn
 pydantic
 pytest
-httpx
 joblib
-psycopg2-binary
 pandas
 scikit-learn
 numpy
