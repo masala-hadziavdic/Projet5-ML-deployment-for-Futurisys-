@@ -1,4 +1,4 @@
-# Environnements Python
+# Ignorer l'environnement Python
 hf-env-py/
 __pycache__/
 *.pyc
