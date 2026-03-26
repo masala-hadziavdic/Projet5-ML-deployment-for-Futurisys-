@@ -1,3 +1,36 @@
+---
+title: "ML Futurisys – Attrition Prediction API"
+emoji: "💻"
+colorFrom: "blue"
+colorTo: "green"
+sdk: "fastapi"
+sdk_version: "0.104"
+python_version: "3.12"
+app_file: "app/main.py"
+pinned: false
+---
+
+# 💻 ML Futurisys – Attrition Prediction API
+
+🔗 Liens du projet
+
+🌐 Hugging Face Space : https://huggingface.co/spaces/amely188/ml-futurisys
+
+💻 GitHub Repository : https://github.com/masala-hadziavdic/Projet5-ML-deployment-for-Futurisys-
+
+Table des matières
+
+À propos du projet
+
+Architecture
+
+Schéma UML
+
+Stack technique
+
+Installation locale
+
+Initialisation PostgreSQL
 # 💻 ML Futurisys – Attrition Prediction API
 
 🔗 Liens du projet
