@@ -81,9 +81,9 @@ model.pkl	Modèle XGBoost
 test_prediction_service.py	Tests unitaires
 🗄️ Schéma UML de la Base de Données
 
-Diagramme UML (à placer dans assets/uml_database.png) :
+![UML Database](assets/uml_database.svg)
 
-![UML Database](assets/uml_database.png)
+> Le code source Mermaid est disponible dans [docs/schema_uml.md](docs/schema_uml.md)
 ⚙️ Stack technique & versions
 Technologie	Version
 Python	3.12
@@ -97,8 +97,9 @@ SQLAlchemy	2.0+
 Pytest	7.4+
 GitHub Actions	CI/CD
 Hugging Face Spaces	Déploiement
-💾 Installation locale
+## 💾 Installation locale
 # Cloner le repository
+```
 git clone https://github.com/masala-hadziavdic/Projet5-ML-deployment-for-Futurisys-.git
 cd Projet5-ML-deployment-for-Futurisys-
 
@@ -114,32 +115,40 @@ source venv/bin/activate
 # Installer dépendances
 pip install --upgrade pip
 pip install -r requirements.txt
+```
 🐘 Initialisation PostgreSQL
 
-Créer une base :
-
+## Créer une base SQL:
+```sql
 CREATE DATABASE futurisys;
+```
 
 Configurer les variables d’environnement :
-
+```
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=futurisys
 DB_USER=postgres
 DB_PASSWORD=your_password
+```
 🚀 Lancement de l’API
+```
 uvicorn app.main:app --reload
+```
 
 Documentation Swagger disponible à :
 
 http://127.0.0.1:8000/docs
+
 📬 Exemple d’utilisation
+```json
 POST /predict
 {
   "prediction": "Non",
   "probability_quit": 0.0962093397974968,
   "probability_stay": 0.9037906527519226
 }
+```
 
 
 🧪 Tests & qualité
