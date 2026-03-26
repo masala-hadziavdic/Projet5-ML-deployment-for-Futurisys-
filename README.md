@@ -3,10 +3,8 @@ title: "ML Futurisys – Attrition Prediction API"
 emoji: "💻"
 colorFrom: "blue"
 colorTo: "green"
-sdk: "fastapi"
-sdk_version: "0.104"
-python_version: "3.12"
-app_file: "app/main.py"
+sdk: "docker"
+app_file: "Dockerfile"
 pinned: false
 ---
 
