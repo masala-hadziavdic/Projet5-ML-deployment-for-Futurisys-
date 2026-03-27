@@ -29,27 +29,6 @@ Stack technique
 Installation locale
 
 Initialisation PostgreSQL
-# 💻 ML Futurisys – Attrition Prediction API
-
-🔗 Liens du projet
-
-🌐 Hugging Face Space : https://huggingface.co/spaces/amely188/ml-futurisys
-
-💻 GitHub Repository : https://github.com/masala-hadziavdic/Projet5-ML-deployment-for-Futurisys-
-
-Table des matières
-
-À propos du projet
-
-Architecture
-
-Schéma UML
-
-Stack technique
-
-Installation locale
-
-Initialisation PostgreSQL
 
 Lancement de l’API
 
@@ -182,21 +161,21 @@ POST /predict
 ```
 
 
-🧪 Tests & qualité
+## 🧪 Tests & Couverture
 
-Lancer les tests :
+Une suite complète de tests unitaires et fonctionnels a été développée avec Pytest pour garantir la robustesse de model.
 
-pytest
+Les tests couvrent :
+- Le bon fonctionnement des endpoints API (`/` et `/predict`)
+- La validation des données via Pydantic
+- Les cas d’erreurs (champs manquants, types invalides → 422)
+- Le chargement du modèle ML
+- L’intégration avec la base de données PostgreSQL
 
-Les tests vérifient :
-
-Chargement du modèle
-
-Validation du schéma d’entrée
-
-Insertion en base
-
-Récupération des prédictions
+📊 **Rapport de couverture de tests :**
+- Couverture globale : **80%**
+- Outil utilisé : `pytest-cov`
+- Rapport HTML généré dans `htmlcov/index.html` pour visualiser les parties testées et non testées.
 
 📊 Traçabilité des prédictions
 
