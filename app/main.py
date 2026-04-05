@@ -1,9 +1,9 @@
+from prediction_service import save_prediction_request, save_prediction_result
 from fastapi import FastAPI, HTTPException
 import joblib
 import pandas as pd
 import os
 from pydantic import BaseModel
-from typing import Optional
 
 # ================================
 # Pydantic Models
@@ -68,6 +68,7 @@ else:
 def home():
     return {"message": "API is running"}
 
+
 @app.post("/predict", response_model=PredictionResult)
 def predict(data: EmployeeData):
 
@@ -94,6 +95,19 @@ def predict(data: EmployeeData):
             "High" if proba[1] > 0.7 else
             "Medium" if proba[1] > 0.3 else
             "Low"
+        )
+
+        # 🔥 SAUVEGARDE EN BASE (ICI !!!)
+        request_id = save_prediction_request(
+            data.age,
+            data.revenu_mensuel,
+            data.departement
+        )
+
+        save_prediction_result(
+            request_id,
+            int(prediction),
+            float(proba[1])
         )
 
         return PredictionResult(
