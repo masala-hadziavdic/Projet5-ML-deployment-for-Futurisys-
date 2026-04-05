@@ -1,4 +1,6 @@
-from prediction_service import save_prediction_request, save_prediction_result
+from .prediction_service import save_prediction_request, save_prediction_result
+from .database import get_connection
+
 from fastapi import FastAPI, HTTPException
 import joblib
 import pandas as pd
