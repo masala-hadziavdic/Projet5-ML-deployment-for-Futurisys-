@@ -1,4 +1,4 @@
-from database import get_connection
+from .database import get_connection
 
 
 def get_employee_by_data(employee_data: dict):
