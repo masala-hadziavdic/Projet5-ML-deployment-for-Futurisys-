@@ -1,5 +1,6 @@
 from database import get_connection
 
+
 def get_employee_by_data(employee_data: dict):
     """
     Recherche un employé existant dans la table employees
@@ -24,24 +25,29 @@ def get_employee_by_data(employee_data: dict):
 
         employee = cur.fetchone()
         cur.close()
+
         return employee
 
 
-def save_prediction_request(age, salary, department):
+def save_prediction_request(age, revenu_mensuel, departement):
     """
     Enregistre une requête (input modèle)
+    ⚠️ Corrigé : noms des colonnes alignés avec la BDD
     """
     with get_connection() as conn:
         cur = conn.cursor()
 
         cur.execute("""
-        INSERT INTO prediction_requests (age, salary, department)
+        INSERT INTO prediction_requests (age, revenu_mensuel, departement)
         VALUES (%s, %s, %s)
         RETURNING id;
-        """, (age, salary, department))
+        """, (age, revenu_mensuel, departement))
 
         request_id = cur.fetchone()[0]
+
+        conn.commit()  # ✅ important
         cur.close()
+
         return request_id
 
 
@@ -59,5 +65,8 @@ def save_prediction_result(request_id, prediction, probability):
         """, (request_id, prediction, probability))
 
         result_id = cur.fetchone()[0]
+
+        conn.commit()  # ✅ important
         cur.close()
+
         return result_id
