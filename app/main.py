@@ -70,61 +70,50 @@ else:
 def home():
     return {"message": "API is running"}
 
-
 @app.post("/predict", response_model=PredictionResult)
 def predict(data: EmployeeData):
 
+    input_data = data.model_dump() if hasattr(data, "model_dump") else data.dict()
+    df = pd.DataFrame([input_data])
+
+    # Prédiction
     if pipeline is None:
-        return PredictionResult(
-            prediction="Non",
-            probability_quit=0.3,
-            probability_stay=0.7,
-            confidence_level="Medium"
-        )
+        prediction = 0
+        proba = [0.7, 0.3]
+    else:
+        try:
+            prediction = pipeline.predict(df)[0]
+            proba = pipeline.predict_proba(df)[0] if hasattr(pipeline, "predict_proba") else [1 - prediction, prediction]
+        except Exception as e:
+            raise HTTPException(
+                status_code=400,
+                detail={"error": "PredictionError", "message": str(e), "input_data": input_data}
+            )
 
+    confidence_level = (
+        "High" if proba[1] > 0.7 else
+        "Medium" if proba[1] > 0.3 else
+        "Low"
+    )
+
+    # 🔥 Essai de sauvegarde en DB sans bloquer l'API
     try:
-        input_data = data.model_dump() if hasattr(data, "model_dump") else data.dict()
-        df = pd.DataFrame([input_data])
-
-        prediction = pipeline.predict(df)[0]
-
-        if hasattr(pipeline, "predict_proba"):
-            proba = pipeline.predict_proba(df)[0]
-        else:
-            proba = [1 - prediction, prediction]
-
-        confidence_level = (
-            "High" if proba[1] > 0.7 else
-            "Medium" if proba[1] > 0.3 else
-            "Low"
-        )
-
-        # 🔥 SAUVEGARDE EN BASE (ICI !!!)
         request_id = save_prediction_request(
             data.age,
             data.revenu_mensuel,
             data.departement
         )
-
         save_prediction_result(
             request_id,
             int(prediction),
             float(proba[1])
         )
-
-        return PredictionResult(
-            prediction="Oui" if prediction == 1 else "Non",
-            probability_quit=float(proba[1]),
-            probability_stay=float(proba[0]),
-            confidence_level=confidence_level
-        )
-
     except Exception as e:
-        raise HTTPException(
-            status_code=400,
-            detail={
-                "error": "PredictionError",
-                "message": str(e),
-                "input_data": input_data
-            }
-        )
+        print("⚠️ DB not available, results not saved:", e)
+
+    return PredictionResult(
+        prediction="Oui" if prediction == 1 else "Non",
+        probability_quit=float(proba[1]),
+        probability_stay=float(proba[0]),
+        confidence_level=confidence_level
+    )
